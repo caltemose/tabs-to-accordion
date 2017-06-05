@@ -1,0 +1,24 @@
+{
+  "name": "tabs-to-accordion",
+  "version": "0.1.0",
+  "description": "A responsive tabs-to-accordion component",
+  "main": "index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caltemose/tabs-to-accordion.git"
+  },
+  "keywords": [
+    "tabs",
+    "accordion",
+    "responsive",
+    "es6"
+  ],
+  "author": "Chad Altemose <caltemose@hugeinc.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/caltemose/tabs-to-accordion/issues"
+  },
+  "homepage": "https://github.com/caltemose/tabs-to-accordion#readme"
+}
