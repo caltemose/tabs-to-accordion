@@ -1,6 +1,4 @@
 const gulp = require('gulp')
-const gutil = require('gulp-util')
-const gulpif = require('gulp-if')
 const del = require('del')
 const nunjucks = require('gulp-nunjucks')
 const stylus = require('gulp-stylus')
