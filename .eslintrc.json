@@ -2,6 +2,9 @@
     "parserOptions": {
         "ecmaVersion": 6
     },
+    "env": {
+        "browser": true
+    },
     "extends": "eslint:recommended",
     "rules": {
         "indent": ["error", 4],
@@ -11,8 +14,6 @@
         "no-console": 1
     },
     "globals": {
-        "console": true,
-        "document": true,
-        "window": true
+        "console": true
     }
 }
