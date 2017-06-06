@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "description": "A responsive tabs-to-accordion component",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/caltemose/tabs-to-accordion.git"
@@ -20,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/caltemose/tabs-to-accordion/issues"
   },
-  "homepage": "https://github.com/caltemose/tabs-to-accordion#readme"
+  "homepage": "https://github.com/caltemose/tabs-to-accordion#readme",
+  "devDependencies": {
+    "gulp": "github:gulpjs/gulp#4.0"
+  }
 }
