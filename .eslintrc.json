@@ -1,0 +1,18 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 6
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "indent": ["error", 4],
+        "linebreak-style": ["error", "unix"],
+        "semi": ["warn", "never"],
+        "no-eval": 2,
+        "no-console": 1
+    },
+    "globals": {
+        "console": true,
+        "document": true,
+        "window": true
+    }
+}
