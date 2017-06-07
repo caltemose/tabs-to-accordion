@@ -1,0 +1,46 @@
+// Accordion styling - smaller screens
+@media (max-width: 767px)
+    .TabsNavigation,
+    .Tabs--init .TabsAccordion-content,
+    .Tabs--init .TabsAccordion--closed .TabsAccordion-content
+        display: none
+
+    .Tabs--init
+        // margin-left: -1.5em
+        // margin-right: -1.5em
+
+        .TabsAccordion-title
+            cursor: pointer
+
+    .TabsAccordion-title
+        margin: 0
+
+    .TabsAccordion-content[aria-hidden="false"]
+        display: block
+
+
+// Tabs Nav styling - larger screens
+@media (min-width: 768px)
+    .Tabs--nav-init .TabsAccordion-title,
+    .Tabs--nav-init .TabsAccordion-content
+        display: none
+
+    .TabsAccordion-content[aria-hidden="false"]
+        display: block
+
+    .TabsNavigation
+        width: auto
+        overflow: hidden
+        position: relative
+        z-index: 10
+
+    .TabsNavigation-item
+        display: table-cell
+        vertical-align: top
+
+    .TabsNavigation-button
+        position: relative
+        display: inline-block
+
+        &[aria-selected="true"]
+            z-index: 10

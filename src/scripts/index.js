@@ -1,3 +1,4 @@
+/* global TabsToAccordion */
 console.log('index.js')
 
 const el = document.getElementById('msg')
@@ -17,3 +18,5 @@ const msg = arr2.join(' ')
 
 console.log(msg)
 el.innerText = msg
+
+new window.TabsToAccordion(document.getElementById("Tabs"))

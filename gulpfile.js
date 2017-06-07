@@ -1,5 +1,8 @@
+const path = require('path')
+const fs = require('fs')
 const gulp = require('gulp')
 const del = require('del')
+const data = require('gulp-data')
 const nunjucks = require('gulp-nunjucks')
 const stylus = require('gulp-stylus')
 const autoprefixer = require('gulp-autoprefixer')
@@ -10,7 +13,12 @@ const stylint = require('gulp-stylint')
 const htmlmin = require('gulp-htmlmin')
 const cleancss = require('gulp-clean-css')
 const uglify = require('gulp-uglify')
+const slugg = require('slugg')
 
+// convert given string to url-safe slug
+const slugify = function slugify (str) {
+    return slugg(str)
+}
 
 /* Supporting tasks
 ---------------------------------------------------------------- */
@@ -20,8 +28,12 @@ gulp.task('clean', (done) => {
 })
 
 gulp.task('html', () => {
+    const jsonFile = path.resolve(__dirname, './src/data.json')
     return gulp.src(['src/html/**/*', '!src/html/**/_*'])
-        .pipe(nunjucks.compile())
+        .pipe(data(() => {
+            return JSON.parse(fs.readFileSync(jsonFile, 'utf8'))
+        }))
+        .pipe(nunjucks.compile({slugify:slugify}))
         .pipe(gulp.dest('dist'))
 })
 

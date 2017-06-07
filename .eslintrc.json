@@ -7,13 +7,14 @@
     },
     "extends": "eslint:recommended",
     "rules": {
-        "indent": ["error", 4],
+        "indent": ["error", 4, {"SwitchCase": 1}],
         "linebreak-style": ["error", "unix"],
         "semi": ["warn", "never"],
         "no-eval": 2,
         "no-console": 1
     },
     "globals": {
-        "console": true
+        "console": true,
+        "module": true
     }
 }
