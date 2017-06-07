@@ -14,6 +14,7 @@ const htmlmin = require('gulp-htmlmin')
 const cleancss = require('gulp-clean-css')
 const uglify = require('gulp-uglify')
 const slugg = require('slugg')
+const ghPages = require('gulp-gh-pages')
 
 // convert given string to url-safe slug
 const slugify = function slugify (str) {
@@ -134,3 +135,12 @@ gulp.task('build', gulp.series('clean', gulp.parallel('html', 'css', 'js')))
 gulp.task('default', gulp.series('build', gulp.parallel('serve', 'watch')))
 
 gulp.task('production', gulp.series('build', gulp.parallel('minify:html', 'minify:css', 'minify:js')))
+
+
+/* Deploy to gh-pages branch
+---------------------------------------------------------------- */
+
+gulp.task('deploy', function() {
+    return gulp.src('./dist/**/*')
+        .pipe(ghPages());
+});
