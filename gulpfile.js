@@ -140,7 +140,9 @@ gulp.task('production', gulp.series('build', gulp.parallel('minify:html', 'minif
 /* Deploy to gh-pages branch
 ---------------------------------------------------------------- */
 
-gulp.task('deploy', function() {
+gulp.task('deploy:ghpages', function() {
     return gulp.src('./dist/**/*')
         .pipe(ghPages());
 });
+
+gulp.task('deploy', gulp.series('production', 'deploy:ghpages'))
