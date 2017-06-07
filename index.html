@@ -1,0 +1,95 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tabs to Accordion Component</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+
+
+<main>
+    <h1>Tabs to Accordion Component</h1>
+    <p id="msg"></p>
+
+    <div id="Tabs" class="Tabs">
+        
+        <ul class="TabsNavigation" role="tablist">
+            
+                <li role="presentation" class="TabsNavigation-item">
+                    <a
+                        href="#TabsAccordion-content-tab-one"
+                        id="TabController-tab-one"
+                        class="TabsNavigation-button"
+                        role="tab"
+                        aria-controls="TabController-tab-one"
+                        aria-expanded="false">
+                        Tab One
+                    </a>
+                </li>
+            
+                <li role="presentation" class="TabsNavigation-item">
+                    <a
+                        href="#TabsAccordion-content-tab-two"
+                        id="TabController-tab-two"
+                        class="TabsNavigation-button"
+                        role="tab"
+                        aria-controls="TabController-tab-two"
+                        aria-expanded="false">
+                        Tab Two
+                    </a>
+                </li>
+            
+                <li role="presentation" class="TabsNavigation-item">
+                    <a
+                        href="#TabsAccordion-content-tab-three"
+                        id="TabController-tab-three"
+                        class="TabsNavigation-button"
+                        role="tab"
+                        aria-controls="TabController-tab-three"
+                        aria-expanded="false">
+                        Tab Three
+                    </a>
+                </li>
+            
+        </ul>
+
+        <div class="TabsAccordion">
+            
+                <h2 class="TabsAccordion-title" id="TabsAccordion-title-tab-one" tabindex="0">
+                    Tab One
+                </h2>
+
+                <div class="TabsAccordion-content" id="TabsAccordion-content-tab-one">
+                    Here is some content
+                </div>
+            
+                <h2 class="TabsAccordion-title" id="TabsAccordion-title-tab-two" tabindex="0">
+                    Tab Two
+                </h2>
+
+                <div class="TabsAccordion-content" id="TabsAccordion-content-tab-two">
+                    Here is some more content
+                </div>
+            
+                <h2 class="TabsAccordion-title" id="TabsAccordion-title-tab-three" tabindex="0">
+                    Tab Three
+                </h2>
+
+                <div class="TabsAccordion-content" id="TabsAccordion-content-tab-three">
+                    Tab three has even more content for your reading pleasure.
+                </div>
+            
+        </div>
+    </div>
+</main>
+
+
+
+<script src="/scripts/TabsToAccordion.js"></script>
+<script src="/scripts/index.js"></script>
+
+
+</body>
+</html>
