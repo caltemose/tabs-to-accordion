@@ -3,15 +3,15 @@
     "tabs": [
         {
             "title": "Tab One",
-            "content": "Here is some content"
+            "content": "<p>This is content for Tab One. The Tab container is styled with a different background color so you can see its boundaries.</p>"
         },
         {
             "title": "Tab Two",
-            "content": "Here is some more content"
+            "content": "<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui tempore eos voluptatum tempora repellendus, aliquam ea odit quo, accusamus illo, dolorem nulla assumenda, a aliquid aspernatur ullam tenetur dignissimos necessitatibus rem doloremque excepturi alias unde itaque impedit. Aspernatur neque earum numquam, provident nesciunt voluptatibus molestias magnam saepe. Minima enim, veritatis, expedita dolore beatae repellendus, eius blanditiis eaque incidunt a libero tenetur distinctio maxime esse. Incidunt temporibus iusto ipsam perspiciatis asperiores at laborum, saepe esse. Quidem ratione molestias, adipisci necessitatibus facilis odit hic a ducimus ipsam nam eos eveniet impedit minima.</p>"
         },
         {
             "title": "Tab Three",
-            "content": "Tab three has even more content for your reading pleasure."
+            "content": "<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam a, rerum dolor ipsam facilis sit quasi doloribus laudantium qui nisi nesciunt quae at ad omnis optio sapiente porro numquam corporis, aliquid eligendi tenetur labore quia excepturi adipisci. Fugiat tempore nulla mollitia excepturi, in, laborum ea rem deleniti dolores veritatis, quia laudantium atque quae fuga repellat</p>"
         }
     ]
 }

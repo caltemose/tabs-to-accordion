@@ -1,0 +1,45 @@
+borderstyle = 1px solid #555
+
+.Tabs
+    h2
+        font-weight: normal
+
+.TabsNavigation
+    margin: 0
+    padding: 0
+
+.TabsNavigation-item
+    margin: 0
+    padding: 0
+    background-color: #fff
+    border: borderstyle
+    border-right: 0
+
+    &:last-child
+        border-right: borderstyle
+
+.TabsNavigation-button
+    padding: 0.5em 1em
+    text-decoration: none
+
+.TabsAccordion
+    background-color: #fff
+
+.TabsAccordion-title
+    padding: 0.25em
+    border: borderstyle
+    border-bottom: 0
+
+    &[aria-selected="true"]
+        margin-bottom: 1em
+        border-bottom: borderstyle
+
+    &:last-of-type
+        border-bottom: borderstyle
+
+.TabsAccordion-content
+    margin-bottom: 1em
+    padding: 1em
+
+    p
+        margin-top: 0
