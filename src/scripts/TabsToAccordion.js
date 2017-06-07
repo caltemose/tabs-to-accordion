@@ -1,11 +1,21 @@
+/**
+ * @author Chad L. Altemose (twitter @caltemose)
+ *
+ * Class to create a Tabs-to-Accordion component that behaves as tabs+content on
+ * larger screens and as an accordion component on smaller screens.
+ */
 class TabsToAccordion {
+
     constructor (element, options = {}) {
         // define default options for this component instance
         this.defaults = {
             defaultTab: 0,
             tabContentClass: 'TabsAccordion-content',
             tabTitleClass: 'TabsAccordion-title',
-            tabNavClass: 'TabsNavigation'
+            tabNavClass: 'TabsNavigation',
+            tabAccordionClass: 'TabsAccordion',
+            scrollAccordion: true,
+            scrollOffset: 10
         }
         // merge defaults with any options passed through the constructor
         this.options = Object.assign(this.defaults, options)
@@ -28,7 +38,7 @@ class TabsToAccordion {
 
         // store the accordion container (smaller screens)
         // and apply appropriate ARIA attribute
-        this.accordion = this.element.querySelector('.TabsAccordion')
+        this.accordion = this.element.querySelector(`.${this.options.tabAccordionClass}`)
         this.accordion.setAttribute('role', 'tablist')
 
         // handle events for accordion/smaller screens
@@ -45,6 +55,7 @@ class TabsToAccordion {
         // handle events for tabs/larger screens
         this.bindNavEvents()
 
+        // select the initial tab
         const startingTab = this.tabContentElements[this.options.defaultTab]
         this.openTab(startingTab)
     }
@@ -72,10 +83,13 @@ class TabsToAccordion {
             // set ARIA attributes for this tab title element
             tabTitle.setAttribute('role', 'tab')
             tabTitle.setAttribute('aria-controls', tabData.tabId)
-            tabTitle.setAttribute('aria-selected', 'false')
-            tabTitle.setAttribute('aria-expanded', 'false')
+            this.setAriaSelected(tabTitle, false)
         }
     }
+
+    //
+    // Accordion-specific functions
+    //
 
     bindAccordionEvents () {
         const tabTitles = this.accordion.querySelectorAll(`.${this.options.tabTitleClass}`)
@@ -100,7 +114,7 @@ class TabsToAccordion {
     }
 
     handleKeyPress (event) {
-        let currentIndex = this.currentTab.position
+        let currentIndex = this.currentTab.position || null
         const keyCodes = {
             SPACE: 32,
             ENTER: 13,
@@ -147,30 +161,41 @@ class TabsToAccordion {
     handleAccordion (tabContentElement) {
         if (!this.isCurrentTab(tabContentElement)) {
             this.openAccordion(tabContentElement)
+        } else {
+            this.closeTab()
         }
-        // else {
-        //     this.closeAccordion(tabContentElement)
-        // }
-    }
-
-    isCurrentTab (tabContentElement) {
-        return this.currentTab.contentElement === tabContentElement
     }
 
     openAccordion (tabContentElement) {
         this.closeTab()
         this.openTab(tabContentElement)
         this.currentTab.titleElement.focus()
-        // TODO scroll the body to reposition the active content
+
+        if (this.options.scrollAccordion) {
+            window.scroll(0, this.currentTab.titleElement.offsetTop - this.options.scrollOffset)
+        }
     }
 
+    //
+    // Tab-specific functions
+    //
+
+    /**
+     * bindNavEvents - add the click event listeners to the tab nav buttons.
+     */
     bindNavEvents () {
         for(let i=0; i<this.tabNavItems.length; i++) {
             this.tabNavItems[i].addEventListener('click', this.onTabClick.bind(this))
         }
-        // TODO handle keypress events for tabs
     }
 
+    /**
+     * onTabClick - handle clicks of the tab button. If the button clicked is
+     * not associated with the currently-expanded tab, close the current tab
+     * and open the newly-selected tab and content.
+     *
+     * @param {MouseEvent} event - the tab button click event.
+     */
     onTabClick (event) {
         event.preventDefault()
         const target = this.element.querySelector(event.currentTarget.hash)
@@ -180,15 +205,35 @@ class TabsToAccordion {
         }
     }
 
-    closeTab () {
-        this.currentTab.contentElement.setAttribute('aria-hidden', 'true')
-        this.currentTab.titleElement.setAttribute('aria-selected', 'false')
-        this.currentTab.titleElement.setAttribute('aria-expanded', 'false')
-        this.tabNavItems[this.currentTab.position].setAttribute('aria-selected', 'false')
-        this.tabNavItems[this.currentTab.position].setAttribute('aria-expanded', 'false')
-        this.currentTab = null
+    /**
+     * updateTabNav - set the aria attributes of the button for the newly
+     * opened tab content.
+     */
+    updateTabNav () {
+        const tab = this.tabNavItems[this.currentTab.position]
+        this.setAriaSelected(tab)
     }
 
+    /**
+     * closeTab - if there is an open tab, hide it and set its aria attributes appropriately.
+     */
+    closeTab () {
+        if (this.currentTab) {
+            this.currentTab.contentElement.setAttribute('aria-hidden', 'true')
+            this.setAriaSelected(this.currentTab.titleElement, false)
+            this.setAriaSelected(this.tabNavItems[this.currentTab.position], false)
+            this.currentTab = null
+        }
+    }
+
+    /**
+     * openTab - set the stored currentTab object properties based on the given
+     * tabContentElement (DOM element), update the aria attributes of this element
+     * and the associated title element and trigger the function to update the
+     * tab button aria attirbutes.
+     *
+     * @param {DOM element} tabContentElement - the DOM element representing the tab content to display/expand.
+     */
     openTab (tabContentElement) {
         this.currentTab = {
             contentElement: tabContentElement,
@@ -196,16 +241,35 @@ class TabsToAccordion {
             position: this.tabContentElements.indexOf(tabContentElement)
         }
         tabContentElement.setAttribute('aria-hidden', 'false')
-        this.currentTab.titleElement.setAttribute('aria-selected', 'true')
-        this.currentTab.titleElement.setAttribute('aria-expanded', 'true')
-
+        this.setAriaSelected(this.currentTab.titleElement)
         this.updateTabNav()
     }
 
-    updateTabNav () {
-        const tab = this.tabNavItems[this.currentTab.position]
-        tab.setAttribute('aria-selected', 'true')
-        tab.setAttribute('aria-expanded', 'true')
+    //
+    // Helper functions
+    //
+
+    /**
+     * isCurrentTab - determine if the given element is the currently
+     * selected tab element return boolean.
+     *
+     * @param {DOM element} tabContentElement - a DOM element to compare to the currently-selected tab content DOM element
+     * @return {Boolean} True if the given tabContentElement is the current tabContentElement
+     */
+    isCurrentTab (tabContentElement) {
+        return !this.currentTab ? false : this.currentTab.contentElement === tabContentElement
+    }
+
+    /**
+     * setAriaSelected - Helper function to set the aria-selected and aria-expanded attributes
+     * of a given element.
+     *
+     * @param {DOM element} element - The DOM element that will have aria attributes updated
+     * @param {Boolean} selected - aria attribute values will be set to this Boolean
+     */
+    setAriaSelected (element, selected = true) {
+        element.setAttribute('aria-selected', selected)
+        element.setAttribute('aria-expanded', selected)
     }
 }
 

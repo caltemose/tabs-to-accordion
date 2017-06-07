@@ -1,1 +1,1 @@
-new window.TabsToAccordion(document.getElementById("Tabs"))
+new window.TabsToAccordion(document.getElementById("Tabs"), { scrollAccordion: false })
