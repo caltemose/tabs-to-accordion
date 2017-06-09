@@ -1,11 +1,18 @@
 /**
- * @author Chad L. Altemose (twitter @caltemose)
+ * @author Chad L. Altemose (twitter || github ->  @caltemose)
  *
  * Class to create a Tabs-to-Accordion component that behaves as tabs+content on
  * larger screens and as an accordion component on smaller screens.
  */
 class TabsToAccordion {
 
+    /**
+     * constructor - this function updates the default options as necessary and 
+     * handles the initialization behavior of this component.
+     * 
+     * @param {DOM Element} element - main DOM element containing this component
+     * @param {Object} options - optional overrides of default options for this component
+     */
     constructor (element, options = {}) {
         // define default options for this component instance
         this.defaults = {
@@ -15,10 +22,9 @@ class TabsToAccordion {
             tabNavClass: 'TabsNavigation',
             tabAccordionClass: 'TabsAccordion',
             breakpoint: 768, // >= this number of pixels we use tab mode, less = accordion mode
-            scrollAccordion: true,
+            scrollAccordion: false,
             scrollOffset: 10,
-            accordionCanCollapseAll: false,
-            measureClass: 'TabsAccordion-content--offscreen' // used to measure tab content height when elements are hidden
+            accordionCanCollapseAll: false
         }
         // merge defaults with any options passed through the constructor
         this.options = Object.assign(this.defaults, options)
@@ -37,6 +43,8 @@ class TabsToAccordion {
             this.element.querySelectorAll(`.${this.options.tabContentClass}`)
         )
 
+        // get data from tab DOM element attributes and store it for use
+        // throughout the lifecycle of this component
         this.fetchTabData()
 
         // store the accordion container (smaller screens)
@@ -68,6 +76,11 @@ class TabsToAccordion {
         }
     }
 
+    /**
+     * fetchTabData - parse the tab markup to retrieve each tab elements Id
+     * and Title and set some appropriate aria attributes on the content DOM elements
+     * and the title DOM elements.
+     */
     fetchTabData () {
         // stores data for all tabs in this component
         this.tabData = []
@@ -99,6 +112,10 @@ class TabsToAccordion {
     // Accordion-specific functions
     //
 
+    /**
+     * bindAccordionEvents - get the accordion title elements and attach
+     * click and keydown listener events.
+     */
     bindAccordionEvents () {
         const tabTitles = this.accordion.querySelectorAll(`.${this.options.tabTitleClass}`)
         for (let i=0; i<tabTitles.length; i++) {
@@ -107,6 +124,12 @@ class TabsToAccordion {
         }
     }
 
+    /**
+     * onTitleClick - handle clicks on accordion titles and toggle the
+     * visibility of the selected accordion item.
+     * 
+     * @param {MouseEvent} event 
+     */
     onTitleClick (event) {
         event.preventDefault()
         // get the content item associated with this title
@@ -114,6 +137,12 @@ class TabsToAccordion {
         this.handleAccordion(tabContent)
     }
 
+    /**
+     * onTitleKeydown - handle key presses on accordion titles and update
+     * the accordion visibility state.
+     * 
+     * @param {KeyboardEvent} event 
+     */
     onTitleKeydown (event) {
         const currentIndex = this.handleKeyPress(event)
         if (currentIndex !== null) {
@@ -121,34 +150,48 @@ class TabsToAccordion {
         }
     }
 
+    /**
+     * handleKeyPress - Given a keyboard event associated with an accordion title button, 
+     * determine the index of the accordion content to take action on. Currently supports
+     * showing the active element, going to the previous element and going to the next element.
+     * 
+     * @param {KeyboardEvent} event 
+     * @return {int} currentIndex - index of tab content element to act on
+     */
     handleKeyPress (event) {
         let currentIndex = this.currentTab.position || null
         const keyCodes = {
             SPACE: 32,
             ENTER: 13,
-            // DOWN: 40,
-            // ESCAPE: 27,
-            // HOME: 36,
-            // LEFT: 37,
-            // PAGE_DOWN: 34,
-            // PAGE_UP: 33,
-            // RIGHT: 39,
-            // TAB: 9,
-            // UP: 38
+            LEFT: 37,
+            UP: 38,
+            RIGHT: 39,
+            DOWN: 40
         }
 
         switch (event.keyCode) {
-            // case keyCodes.LEFT:
-            // case keyCodes.UP:
-            //     currentIndex--
-            //     if (currentIndex < 0) {
-            //         currentIndex = this.tabData.length - 1
-            //     }
-            //     break
-
+            // show selected tab
             case keyCodes.SPACE:
             case keyCodes.ENTER:
                 currentIndex = this.handleEnter(currentIndex)
+                break
+
+            // show previous tab
+            case keyCodes.LEFT:
+            case keyCodes.UP:
+                currentIndex--
+                if (currentIndex < 0) {
+                    currentIndex = this.tabData.length - 1
+                }
+                break
+            
+            // show next tab
+            case keyCodes.RIGHT:
+            case keyCodes.DOWN:
+                currentIndex++
+                if (currentIndex >= this.tabData.length) {
+                    currentIndex = 0
+                }
                 break
 
             default:
@@ -158,6 +201,13 @@ class TabsToAccordion {
         return currentIndex
     }
 
+    /**
+     * handleEnter - return the index of the active tab content element. Return the
+     * given index if the accordion title being acted on is the one associated with
+     * already open content.
+     * 
+     * @param {int} currentIndex 
+     */
     handleEnter (currentIndex) {
         const tab = document.getElementById(document.activeElement.getAttribute('aria-controls'))
         if (tab !== this.currentTab.contentElement) {
@@ -166,6 +216,13 @@ class TabsToAccordion {
         return currentIndex
     }
 
+    /**
+     * handleAccordion - takes a given accordion content element and shows it if it's
+     * hidden. If the content is visible and collapsing all accordion content is enabled, 
+     * hide the given accordion content.
+     * 
+     * @param {DOM Element} tabContentElement - tab content element to show or hide
+     */
     handleAccordion (tabContentElement) {
         if (!this.isCurrentTab(tabContentElement)) {
             this.openAccordion(tabContentElement)
@@ -180,6 +237,12 @@ class TabsToAccordion {
         }
     }
 
+    /**
+     * openAccordion - switch to new tab content by hiding the open tab and
+     * showing the activated tab. Scroll the accordion if the behavior is enabled.
+     * 
+     * @param {DOM Element} tabContentElement - tab content element to show
+     */
     openAccordion (tabContentElement) {
         this.closeTab()
         this.openTab(tabContentElement)
