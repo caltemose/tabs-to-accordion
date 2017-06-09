@@ -13,7 +13,7 @@ The current version of this component can be seen here:
 This component has not yet been fully tested for browser compatibility and for accessibility. Those testing efforts are forthcoming. 
 
 
-## Goals for Refactoring
+## Action Items
 
 - ~~ES6 syntax~~
 - ~~Ditch jQuery dependency~~
@@ -23,12 +23,8 @@ This component has not yet been fully tested for browser compatibility and for a
 - WCAG 2.0 compliant (not sure what level yet)
 - Use module builder instead of attaching to window cause that's a bit dumb
 - Add a class to selected tab nav &lt;li&gt; elements so they can be styled according to state (this will allow the border to be on the &lt;li&gt; in the cases where it might be desirable to hide the bottom border on selected tab buttons)
-
-
-## Possible Improvements
-
-- More config data passed through constructor/options (scroll on/off and amount, etc)
 - Options for extra tab markup (for larger screens) to be generated client-side (maybe, might not do this)
+- More usage examples (primarily for testing different use cases and improving code)
 
 
 ## Notes About Troublesome Features
@@ -37,20 +33,20 @@ There are a few features that are disabled by default or I chose to omit entirel
 
 ### Completely Closing the Accordion
 
-The original CodePen example for this code did not allow the accordion to be completely collapsed. By completely collapsed I mean this:
+The original CodePen example for this code did not allow the accordion to be completely collapsed. By completely collapsed I mean that when the component is on a small screen (in accordion mode) only the buttons/titles are visible and all content is hidden:
 
 ![collapsed accordion](collapsed-accordion.png)
 
 After implementing the feature, I realized one reason why the original developer may not have added this feature: when the accordion is completely collapsed and the user changes the window size to switch the component from accordion mode to tabs mode, there will be no visible tab content which is not a desireable behavior of a tab system.
 
-In this case, I have included this behavior in my version of the component but it is disabled by default.
+In this case, I have included this behavior in my version of the component but it is disabled by default. When it is enabled, an optimized (throttled) window resize listener is added that will check to see the accordion is completely collapsed and the window is resized to switch to tabs mode - in this case the previously visible content will be shown.
 
 
 ### Consistent Tab Height
 
 Enforcing a consistent tab height across all tabs prevents the page from wiggling when the user changes tabs and the newly-visible tab content is a different height than the previously-visible tab content. 
 
-I experimented with handling this in Javascript but it became clear that for me, the best way to enforce consistent tab height is through the CSS and breakpoints and is best left to the developer using this component. Read on if you want to know why.
+I experimented with handling this in Javascript but it became clear that for me, the best way to enforce consistent tab height is through the CSS and breakpoints and is best left to the developer using this component. Additionally, enforcing a consistent tab height is not always a good idea which is another reason why I removed this behavior. Read on if you want to know why.
 
 There are two primary reasons why I removed my test code that normalized the tab content height. The first reason is the most significant. In order to set the tab content elements uniformly, on initialization the heights of all tab content elements must be checked to determine the biggest one and then the heights of all tab content elements are set to that maximum height. The problem with this is that in order to determine the tab content element heights, each element cannot be hidden using `display: none` - they must be hidden with something like `visibility: hidden`. Since this is not normally a desirable way to hide content, the Javascript must temporarily style the tab content elements so they can be measured and then reset their styles back to the default. For example, I used this styling to be able to measure the tab content elements:
 
