@@ -1,1 +1,5 @@
-new window.TabsToAccordion(document.getElementById("Tabs"), { scrollAccordion: false })
+const opts = {
+    scrollAccordion: false,
+    accordionCanCollapseAll: true
+}
+new window.TabsToAccordion(document.getElementById("Tabs"), opts)

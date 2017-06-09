@@ -14,8 +14,11 @@ class TabsToAccordion {
             tabTitleClass: 'TabsAccordion-title',
             tabNavClass: 'TabsNavigation',
             tabAccordionClass: 'TabsAccordion',
+            breakpoint: 768, // >= this number of pixels we use tab mode, less = accordion mode
             scrollAccordion: true,
-            scrollOffset: 10
+            scrollOffset: 10,
+            accordionCanCollapseAll: false,
+            measureClass: 'TabsAccordion-content--offscreen' // used to measure tab content height when elements are hidden
         }
         // merge defaults with any options passed through the constructor
         this.options = Object.assign(this.defaults, options)
@@ -58,6 +61,13 @@ class TabsToAccordion {
         // select the initial tab
         const startingTab = this.tabContentElements[this.options.defaultTab]
         this.openTab(startingTab)
+
+        // need a window resize listener if the accordion can be fully collapsed
+        if (this.defaults.accordionCanCollapseAll) {
+            this.attachResizeListener()
+        }
+
+        this.checkTabContentHeight()
     }
 
     fetchTabData () {
@@ -162,7 +172,13 @@ class TabsToAccordion {
         if (!this.isCurrentTab(tabContentElement)) {
             this.openAccordion(tabContentElement)
         } else {
-            this.closeTab()
+            // this is conditional because using this feature means listening for
+            // window resize events to show the last opened tab if none are open
+            // and the user changes window width to change the style from accordion
+            // to tab mode -- we need to avoid having no content visible if we show
+            // the tab mode.
+            if (this.defaults.accordionCanCollapseAll)
+                this.closeTab()
         }
     }
 
@@ -179,6 +195,49 @@ class TabsToAccordion {
     //
     // Tab-specific functions
     //
+
+    checkTabContentHeight () {
+        if (window.innerWidth < this.defaults.breakpoint) {
+            return
+        }
+
+        let maxHeight = 0
+        let hiddenElements = []
+        for(let i=0; i<this.tabContentElements.length; i++) {
+            let el = this.tabContentElements[i]
+            let display = ''
+            if (el.style.display) {
+                display = el.style.display
+            } else if (el.currentStyle) {
+                display = el.currentStyle.display
+            } else if (document.defaultView.getComputedStyle) {
+                display = document.defaultView.getComputedStyle(el, null).getPropertyValue('display')
+            }
+            if (display !== 'none') {
+                maxHeight = maxHeight < el.offsetHeight ? el.offsetHeight : maxHeight
+            } else {
+                el.classList.add(this.defaults.measureClass)
+                hiddenElements.push(el)
+            }
+        }
+        setTimeout(this.normalizeTabContentHeight.bind(this), 100, hiddenElements, maxHeight)
+    }
+
+    normalizeTabContentHeight (hiddenElements, maxHeight) {
+        for(let i=0; i<hiddenElements.length; i++) {
+            console.log('hiddenElements[i].offsetHeight', hiddenElements[i].offsetHeight)
+            if (hiddenElements[i].offsetHeight > maxHeight) {
+                maxHeight = hiddenElements[i].offsetHeight
+            }
+            hiddenElements[i].classList.remove(this.defaults.measureClass)
+        }
+        
+        console.log('maxHeight', maxHeight)
+
+        for(let i=0; i<this.tabContentElements.length; i++) {
+            this.tabContentElements[i].style.height = maxHeight
+        }
+    }
 
     /**
      * bindNavEvents - add the click event listeners to the tab nav buttons.
@@ -222,6 +281,7 @@ class TabsToAccordion {
             this.currentTab.contentElement.setAttribute('aria-hidden', 'true')
             this.setAriaSelected(this.currentTab.titleElement, false)
             this.setAriaSelected(this.tabNavItems[this.currentTab.position], false)
+            this.previousTab = this.currentTab
             this.currentTab = null
         }
     }
@@ -235,6 +295,7 @@ class TabsToAccordion {
      * @param {DOM element} tabContentElement - the DOM element representing the tab content to display/expand.
      */
     openTab (tabContentElement) {
+        this.previousTab = this.currentTab
         this.currentTab = {
             contentElement: tabContentElement,
             titleElement: tabContentElement.previousElementSibling,
@@ -243,6 +304,40 @@ class TabsToAccordion {
         tabContentElement.setAttribute('aria-hidden', 'false')
         this.setAriaSelected(this.currentTab.titleElement)
         this.updateTabNav()
+    }
+
+    //
+    //
+    //
+
+    attachResizeListener () {
+        const throttle = (type, name) => {
+            let running = false
+            const func = () => {
+                if (running) {
+                    return
+                }
+                running = true
+                requestAnimationFrame(() => {
+                    window.dispatchEvent(new CustomEvent(name))
+                    running = false
+                })
+            }
+            window.addEventListener(type, func)
+        }
+
+        throttle('resize', 'optimizedResize')
+
+        window.addEventListener('optimizedResize', () => {
+            console.log('optimizedResize')
+            // if we're in tab mode and no tab content is visible, open the previously open tab
+            if (window.innerWidth >= this.defaults.breakpoint && !this.currentTab && this.previousTab) {
+                this.openTab(this.previousTab.contentElement)
+            }
+
+            // may need to reset the consistent tab height so check it and optionally update it
+            this.checkTabContentHeight()
+        })
     }
 
     //

@@ -1,3 +1,10 @@
+.Tabs
+    box-sizing: border-box
+    position: relative
+
+    *
+        box-sizing: border-box
+
 // Accordion styling - smaller screens
 @media (max-width: 767px)
     .TabsNavigation,
@@ -46,3 +53,9 @@
 
         &[aria-selected="true"]
             z-index: 10
+
+    .TabsAccordion-content--offscreen
+        position: absolute !important
+        left: 0 !important
+        display: inline !important
+        visibility: hidden
