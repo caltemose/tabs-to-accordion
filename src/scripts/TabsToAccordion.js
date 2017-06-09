@@ -66,8 +66,6 @@ class TabsToAccordion {
         if (this.defaults.accordionCanCollapseAll) {
             this.attachResizeListener()
         }
-
-        this.checkTabContentHeight()
     }
 
     fetchTabData () {
@@ -196,49 +194,6 @@ class TabsToAccordion {
     // Tab-specific functions
     //
 
-    checkTabContentHeight () {
-        if (window.innerWidth < this.defaults.breakpoint) {
-            return
-        }
-
-        let maxHeight = 0
-        let hiddenElements = []
-        for(let i=0; i<this.tabContentElements.length; i++) {
-            let el = this.tabContentElements[i]
-            let display = ''
-            if (el.style.display) {
-                display = el.style.display
-            } else if (el.currentStyle) {
-                display = el.currentStyle.display
-            } else if (document.defaultView.getComputedStyle) {
-                display = document.defaultView.getComputedStyle(el, null).getPropertyValue('display')
-            }
-            if (display !== 'none') {
-                maxHeight = maxHeight < el.offsetHeight ? el.offsetHeight : maxHeight
-            } else {
-                el.classList.add(this.defaults.measureClass)
-                hiddenElements.push(el)
-            }
-        }
-        setTimeout(this.normalizeTabContentHeight.bind(this), 100, hiddenElements, maxHeight)
-    }
-
-    normalizeTabContentHeight (hiddenElements, maxHeight) {
-        for(let i=0; i<hiddenElements.length; i++) {
-            console.log('hiddenElements[i].offsetHeight', hiddenElements[i].offsetHeight)
-            if (hiddenElements[i].offsetHeight > maxHeight) {
-                maxHeight = hiddenElements[i].offsetHeight
-            }
-            hiddenElements[i].classList.remove(this.defaults.measureClass)
-        }
-        
-        console.log('maxHeight', maxHeight)
-
-        for(let i=0; i<this.tabContentElements.length; i++) {
-            this.tabContentElements[i].style.height = maxHeight
-        }
-    }
-
     /**
      * bindNavEvents - add the click event listeners to the tab nav buttons.
      */
@@ -307,9 +262,16 @@ class TabsToAccordion {
     }
 
     //
-    //
+    //  
     //
 
+    /**
+     * attachResizeListener - attaches a custom (throttled) window resize listener
+     * to open the most recently-opened tab when the user has collapsed all content
+     * when this component is in Accordion mode and the screen is resized to switch
+     * into Tab mode because we don't ever want to have all tabs hidden when this
+     * component is in Tab mode.
+     */
     attachResizeListener () {
         const throttle = (type, name) => {
             let running = false
@@ -329,14 +291,10 @@ class TabsToAccordion {
         throttle('resize', 'optimizedResize')
 
         window.addEventListener('optimizedResize', () => {
-            console.log('optimizedResize')
             // if we're in tab mode and no tab content is visible, open the previously open tab
             if (window.innerWidth >= this.defaults.breakpoint && !this.currentTab && this.previousTab) {
                 this.openTab(this.previousTab.contentElement)
             }
-
-            // may need to reset the consistent tab height so check it and optionally update it
-            this.checkTabContentHeight()
         })
     }
 
