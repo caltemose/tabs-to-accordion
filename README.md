@@ -4,20 +4,17 @@ A tabs (larger screens) to accordion (smaller screens) reusable component.
 
 Based on/influenced by this CodePen: https://codepen.io/mpiotrowicz/pen/gocmu
 
-## Current Status
+## What This Is
 
-Currently implementing the feature to allow the accordion sections to close without opening a new section.
-This works but if you cross the small-to-large breakpoint (768px) tab content will be hidden on larger screens which is undesirable.
+This is a responsive component that behaves as a tab system on larger screens and as an accordion on smaller screens.
 
+## Status/Notes
 
-## Notes
-
-The repo currently has a running example with the mostly unmodified code from the above CodePen I used as reference while building the refactored version that meets with the goals listed below.
-
-Current version of the code can be seen here:
+The current version of this component can be seen here:
 [https://caltemose.github.io/tabs-to-accordion/](https://caltemose.github.io/tabs-to-accordion/)
 
-Currently the code can use some refactoring for the sake of DRY in addition to the unmet goals below.
+This component has not yet been fully tested for browser compatibility and for accessibility. Those testing efforts are forthcoming. 
+
 
 ## Goals for Refactoring
 
@@ -26,9 +23,9 @@ Currently the code can use some refactoring for the sake of DRY in addition to t
 - ~~No template embedded in the Javascript~~
 - ~~CSS updated to follow SuitCSS (probably)~~
 - WCAG 2.0 compliant (not sure what level yet)
-- Use module builder instead of attaching to window
-- Expanded content can be closed when current tab/title is clicked/touched (in-progress, see Current Status above regarding bug/issue)
+- Use module builder instead of attaching to window cause that's a bit dumb
 - Add a class to selected tab nav &lt;li&gt; elements so they can be styled according to state (this will allow the border to be on the &lt;li&gt; in the cases where it might be desirable to hide the bottom border on selected tab buttons)
+
 
 ## Possible Improvements
 
@@ -37,12 +34,11 @@ Currently the code can use some refactoring for the sake of DRY in addition to t
 
 
 
-
-### Notes About Troublesome Features
+## Notes About Troublesome Features
 
 There are a few features that are disabled by default or I chose to omit entirely after exploring potential solutions. They are described below.
 
-## Completely Closing the Accordion
+### Completely Closing the Accordion
 
 The original CodePen example for this code did not allow the accordion to be completely collapsed. By completely collapsed I mean this:
 
@@ -53,7 +49,7 @@ After implementing the feature, I realized one reason why the original developer
 In this case, I have included this behavior in my version of the component but it is disabled by default.
 
 
-## Consistent Tab Height
+### Consistent Tab Height
 
 Enforcing a consistent tab height across all tabs prevents the page from wiggling when the user changes tabs and the newly-visible tab content is a different height than the previously-visible tab content. 
 
