@@ -21,7 +21,7 @@ This component has not yet been fully tested for browser compatibility and for a
 - ~~CSS updated to follow SuitCSS (probably)~~
 - refactor the naming convention (CSS classes and JS functions) to be a little simpler and clearer
 - WCAG 2.0 compliant (not sure what level yet)
-- Use module builder instead of attaching to window cause that's a bit dumb
+- ~~Use module builder instead of attaching to window cause that's a bit outdated~~
 - Add a class to selected tab nav &lt;li&gt; elements so they can be styled according to state (this will allow the border to be on the &lt;li&gt; in the cases where it might be desirable to hide the bottom border on selected tab buttons)
 - Options for extra tab markup (for larger screens) to be generated client-side (maybe, might not do this)
 - More usage examples (primarily for testing different use cases and improving code)
