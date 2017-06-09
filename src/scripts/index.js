@@ -1,9 +1,12 @@
 import TabsToAccordion from './TabsToAccordion'
 
-const opts = {
-    
-}
 const container = document.getElementById("Tabs")
+
+const opts = {
+    accordionCanCollapseAll: container.dataset.collapsible === 'true' || false,
+    scrollAccordion: container.dataset.scrollOnChange === 'true' || false
+}
+
 new TabsToAccordion(container, opts)
 
 /*
