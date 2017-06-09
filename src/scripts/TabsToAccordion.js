@@ -389,4 +389,4 @@ class TabsToAccordion {
     }
 }
 
-window.TabsToAccordion = TabsToAccordion
+export default TabsToAccordion

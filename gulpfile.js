@@ -6,7 +6,6 @@ const data = require('gulp-data')
 const nunjucks = require('gulp-nunjucks')
 const stylus = require('gulp-stylus')
 const autoprefixer = require('gulp-autoprefixer')
-const babel = require('gulp-babel')
 const browsersync = require('browser-sync').create()
 const eslint = require('gulp-eslint')
 const stylint = require('gulp-stylint')
@@ -15,6 +14,11 @@ const cleancss = require('gulp-clean-css')
 const uglify = require('gulp-uglify')
 const slugg = require('slugg')
 const ghPages = require('gulp-gh-pages')
+
+const rollup = require('rollup')
+const resolve = require('rollup-plugin-node-resolve')
+const babel = require('rollup-plugin-babel')
+
 
 // convert given string to url-safe slug
 const slugify = function slugify (str) {
@@ -47,9 +51,29 @@ gulp.task('css', () => {
 })
 
 gulp.task('js', () => {
-    return gulp.src('src/scripts/**/*')
-        .pipe(babel())
-        .pipe(gulp.dest('dist/scripts'))
+    let cache
+
+    return rollup.rollup({
+        entry: 'src/scripts/index.js',
+        cache: cache,
+        plugins: [
+            resolve(),
+            babel()
+        ]
+    }).then((bundle) => {
+        const result = bundle.generate({
+            format: 'cjs'
+        })
+
+        cache = bundle
+
+        bundle.write({
+            format: 'cjs',
+            moduleName: 'index',
+            dest: './dist/scripts/index.js',
+            sourceMap: true
+        })
+    })
 })
 
 gulp.task('serve', () => {
