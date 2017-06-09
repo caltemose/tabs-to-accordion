@@ -9,7 +9,8 @@
     "lintjs": "./node_modules/.bin/gulp lint:js",
     "lintcss": "./node_modules/.bin/gulp lint:css",
     "lint": "./node_modules/.bin/gulp lint",
-    "production": "./node_modules/.bin/gulp production"
+    "production": "./node_modules/.bin/gulp production",
+    "deploy": "./node_modules/.bin/gulp deploy"
   },
   "repository": {
     "type": "git",
