@@ -1,1 +1,1 @@
-"use strict";new window.TabsToAccordion(document.getElementById("Tabs"),{scrollAccordion:!1});
+"use strict";var opts={scrollAccordion:!1,accordionCanCollapseAll:!0};new window.TabsToAccordion(document.getElementById("Tabs"),opts);
